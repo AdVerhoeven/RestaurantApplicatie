@@ -61,7 +61,7 @@ namespace ExcellentTaste.Pages.Products
         // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync(int[] dietselection)
         {
-            //CHANGE: Removed Request.Form and replaced with parameter in handler as seen above. (also parses string values to ints)
+            //CHANGE: Removed Request.Form["dietselection"] and replaced with parameter in handler as seen above. (also parses string values to ints)
             if (!ModelState.IsValid)
             {
                 return Page();
