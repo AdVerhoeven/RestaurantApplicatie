@@ -1,0 +1,8 @@
+﻿@model IEnumerable<ExcellentTaste.Models.CategoryViewModel>
+<div id="categorymenu" class="row">
+    @foreach (var item in Model)
+    {
+        <span><button class="btn btn-secondary" type="button" value="@item.Id">@item.Name</button></span>
+    }
+    <div class="category-content"></div>
+</div>
