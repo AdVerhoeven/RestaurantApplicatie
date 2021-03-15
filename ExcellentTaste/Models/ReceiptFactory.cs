@@ -21,7 +21,7 @@ namespace ExcellentTaste.Models
                 var product = orderitem.Product;
                 if (product == null)
                 {
-                    //TODO: Get the correct product from the database or throw an exception
+                    //TODO: Get the correct product from the database
                 }
                 sb.Append($"{product.Name} €{product.Price} x{amount}\n");
                 total += product.Price * amount;

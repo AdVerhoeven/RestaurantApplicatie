@@ -4,5 +4,8 @@
     {
         <span><button class="btn btn-secondary" type="button" value="@item.Id">@item.Name</button></span>
     }
-    <div class="category-content"></div>
+    @foreach (var item in Model)
+    {
+        <div class="category-content" id="@("category-container"+item.Id)" hidden></div>
+    }
 </div>
