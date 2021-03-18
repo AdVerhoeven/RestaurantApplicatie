@@ -1,0 +1,22 @@
+﻿@model IEnumerable<ExcellentTaste.Models.Product>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.LabelFor(model => model.FirstOrDefault().Name)
+                </th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach(var product in Model)
+            {
+                <tr>
+                    <td>
+                        @*TODO: Create button/link to add new item to the Order*@
+                        <a class="btn btn-primary" id="@product.Id"></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

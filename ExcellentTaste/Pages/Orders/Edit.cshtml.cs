@@ -23,7 +23,8 @@ namespace ExcellentTaste.Pages.Orders
         [BindProperty]
         public Order Order { get; set; }
 
-        public List<Product> OrderedProducts { get; set; }
+        [BindProperty]
+        public IEnumerable<OrderItem> OrderItems { get; set; }
 
         public List<CategoryViewModel> Categories { get; set; }
 
@@ -69,7 +70,45 @@ namespace ExcellentTaste.Pages.Orders
                 return Page();
             }
 
+
+            //TODO: proper binding.
+            var formdata = Request.Form;
+            var productIds = Request.Form["item.Product.Id"];
+            var quantity = Request.Form["item.Quantity"];
+            var status = Request.Form["item.isReady"];
+            //Needs proper binding and fixing, duplicate entries and more are being added.
+            Order.Items = await _context.OrderItem.Where(orit => orit.Order == Order).ToListAsync();
+            for (int i = 0; i < productIds.Count; i++)
+            {
+                int id = int.Parse(productIds[i]);
+                if (Order.Items.Any(x => x.Id == id))
+                {
+                    var updatedItem = Order.Items.FirstOrDefault(x => x.Id == id);
+                    if(int.Parse(quantity[i]) == 0)
+                    {
+                        _context.Remove(updatedItem);
+                        continue;
+                    }
+                    updatedItem.IsReady = bool.Parse(status[i]);
+                    updatedItem.Quantity = int.Parse(quantity[i]);
+                }
+                else
+                {
+                    if(int.Parse(quantity[i]) == 0)
+                    {
+                        continue;
+                    }
+                    Order.Items.Add(new OrderItem
+                    {
+                        Order = Order,
+                        Product = _context.Product.FirstOrDefault(product => product.Id == id),
+                        IsReady = bool.Parse(status[i]),
+                        Quantity = int.Parse(quantity[i])
+                    });
+                }
+            }
             _context.Attach(Order).State = EntityState.Modified;
+
 
             try
             {
@@ -92,28 +131,39 @@ namespace ExcellentTaste.Pages.Orders
 
         public PartialViewResult OnGetNewItems(int orderId, int categoryId)
         {
-            var items = new List<OrderItem>();
-            var selected = _context.Categories
+
+            var selectedCategory = _context.Categories
                 .Include(cat => cat.Products)
                 .ThenInclude(pc => pc.Product)
                 .ThenInclude(p => p.ProductTags)
                 .ThenInclude(pt => pt.DietTag)
                 .FirstOrDefault(cat => cat.Id == categoryId);
+
             var order = _context.Order.FirstOrDefault(order => order.Id == orderId);
-            if (selected == null)
+
+            //fill the items with the items of the order.
+            List<OrderItem> items = _context.OrderItem.Where(orderitem => orderitem.Order == order).ToList();
+
+            if (selectedCategory == null)
             {
                 throw new NullReferenceException();
             }
-            foreach (var item in selected.Products.Select(p => p.Product))
+            foreach (var product in selectedCategory.Products.Select(p => p.Product))
             {
-                items.Add(new OrderItem
-                { 
-                    Product = item,
-                    Order = order,
-                    IsReady = false,
-                    Quantity = 0
-                });
+                //If this product is not yet in the list of products (it hasn't previously been added) add it
+                if (!items.Any(i => i.Product == product))
+                {
+                    items.Add(new OrderItem
+                    {
+                        Id = -1,
+                        Product = product,
+                        Order = order,
+                        IsReady = false,
+                        Quantity = 0
+                    });
+                }
             }
+
 
             return Partial("OrderItems/_ItemList", items);
         }

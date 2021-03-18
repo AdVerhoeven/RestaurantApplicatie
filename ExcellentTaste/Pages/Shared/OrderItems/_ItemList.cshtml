@@ -18,11 +18,13 @@
         @foreach (var item in Model)
         {
             <tr>
+                @Html.HiddenFor(modelItem => item.Id)
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.Name)
+                    @Html.HiddenFor(modelItem => item.Product.Id)
                 </td>
                 <td>
-                    @Html.EditorFor(modelItem => item.Quantity)
+                    @Html.EditorFor(modelItem => item.Quantity@*, new { htmlAttributes =  new { min = item.Quantity.ToString()} }*@)
                 </td>
                 <td>
                     @Html.EditorFor(modelItem => item.IsReady)

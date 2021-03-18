@@ -30,7 +30,7 @@ namespace ExcellentTaste.Pages.Categories
                 return NotFound();
             }
 
-            Category = await _context.Categories.FirstOrDefaultAsync(m => m.Id == id);
+            Category = await _context.Categories.Include(c => c.Products).ThenInclude(p => p.Product).FirstOrDefaultAsync(m => m.Id == id);
 
             if (Category == null)
             {

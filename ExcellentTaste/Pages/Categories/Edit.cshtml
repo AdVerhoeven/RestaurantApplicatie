@@ -22,6 +22,7 @@
             <div class="form-group">
                 <label asp-for="Category.Products" class="control-label"></label>
                 @*TODO: get paged list of products with searching etc.*@
+                <partial name="_ProductList" model="Model.Category.Products.Select(pc => pc.Product)"/>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
