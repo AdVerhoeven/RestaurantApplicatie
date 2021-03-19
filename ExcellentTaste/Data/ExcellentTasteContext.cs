@@ -69,6 +69,11 @@ namespace ExcellentTaste.Data
                 .HasOne(pc => pc.Product)
                 .WithMany(p => p.Category)
                 .HasForeignKey(pc => pc.ProductId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(ordit => ordit.Order)
+                .WithMany(ord => ord.Items)
+                .HasForeignKey(ordit => ordit.OrderId);
         }
     }
 }

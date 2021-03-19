@@ -21,10 +21,10 @@
                 @Html.HiddenFor(modelItem => item.Id)
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.Name)
-                    @Html.HiddenFor(modelItem => item.Product.Id)
+                    @Html.HiddenFor(modelItem => item.ProductId)
                 </td>
                 <td>
-                    @Html.EditorFor(modelItem => item.Quantity@*, new { htmlAttributes =  new { min = item.Quantity.ToString()} }*@)
+                    @Html.EditorFor(modelItem => item.Quantity)
                 </td>
                 <td>
                     @Html.EditorFor(modelItem => item.IsReady)

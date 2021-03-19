@@ -4,14 +4,16 @@ using ExcellentTaste.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ExcellentTaste.Migrations
 {
     [DbContext(typeof(ExcellentTasteContext))]
-    partial class ExcellentTasteContextModelSnapshot : ModelSnapshot
+    [Migration("20210319112454_orderproductids")]
+    partial class orderproductids
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

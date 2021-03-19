@@ -6,7 +6,6 @@
                     @Html.LabelFor(model => model.FirstOrDefault().Name)
                 </th>
             </tr>
-
         </thead>
         <tbody>
             @foreach(var product in Model)
@@ -14,7 +13,7 @@
                 <tr>
                     <td>
                         @*TODO: Create button/link to add new item to the Order*@
-                        <a class="btn btn-primary" id="@product.Id"></a>
+                        <button class="btn btn-primary" onclick="AddItem(@product.Id)">@product.Name</button>
                     </td>
                 </tr>
             }

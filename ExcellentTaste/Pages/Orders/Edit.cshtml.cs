@@ -70,45 +70,8 @@ namespace ExcellentTaste.Pages.Orders
                 return Page();
             }
 
-
-            //TODO: proper binding.
             var formdata = Request.Form;
-            var productIds = Request.Form["item.Product.Id"];
-            var quantity = Request.Form["item.Quantity"];
-            var status = Request.Form["item.isReady"];
-            //Needs proper binding and fixing, duplicate entries and more are being added.
-            Order.Items = await _context.OrderItem.Where(orit => orit.Order == Order).ToListAsync();
-            for (int i = 0; i < productIds.Count; i++)
-            {
-                int id = int.Parse(productIds[i]);
-                if (Order.Items.Any(x => x.Id == id))
-                {
-                    var updatedItem = Order.Items.FirstOrDefault(x => x.Id == id);
-                    if(int.Parse(quantity[i]) == 0)
-                    {
-                        _context.Remove(updatedItem);
-                        continue;
-                    }
-                    updatedItem.IsReady = bool.Parse(status[i]);
-                    updatedItem.Quantity = int.Parse(quantity[i]);
-                }
-                else
-                {
-                    if(int.Parse(quantity[i]) == 0)
-                    {
-                        continue;
-                    }
-                    Order.Items.Add(new OrderItem
-                    {
-                        Order = Order,
-                        Product = _context.Product.FirstOrDefault(product => product.Id == id),
-                        IsReady = bool.Parse(status[i]),
-                        Quantity = int.Parse(quantity[i])
-                    });
-                }
-            }
             _context.Attach(Order).State = EntityState.Modified;
-
 
             try
             {
@@ -131,7 +94,7 @@ namespace ExcellentTaste.Pages.Orders
 
         public PartialViewResult OnGetNewItems(int orderId, int categoryId)
         {
-
+            //TODO: Refactor to match the new data flow.
             var selectedCategory = _context.Categories
                 .Include(cat => cat.Products)
                 .ThenInclude(pc => pc.Product)
@@ -166,6 +129,33 @@ namespace ExcellentTaste.Pages.Orders
 
 
             return Partial("OrderItems/_ItemList", items);
+        }
+
+        public PartialViewResult OnGetCategory(int categoryId)
+        {
+            List<Product> model = _context.ProductCategories.Where(pc => pc.CategoryId == categoryId).Select(pc => pc.Product).ToList();
+            return Partial("OrderItems/_AddItemList", model);
+        }
+
+        public PartialViewResult OnGetAddItem(int orderId, int productId)
+        {
+            var order = _context.Order
+                .Include(o => o.Items)
+                .ThenInclude(item => item.Product)
+                .FirstOrDefault(o => o.Id == orderId);
+
+            var product = _context.Product.Find(productId);
+            var newItem = new OrderItem()
+            {
+                IsReady = false,
+                Order = order,
+                Product = product,
+                Quantity = 1
+            };
+            order.Items.Add(newItem);
+            _context.Attach(order).State = EntityState.Modified;
+            _context.SaveChanges();
+            return Partial("OrderItems/_ItemList", order.Items);
         }
 
         private bool OrderExists(int id)
