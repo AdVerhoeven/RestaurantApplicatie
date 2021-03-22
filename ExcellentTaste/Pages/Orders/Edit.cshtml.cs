@@ -24,7 +24,7 @@ namespace ExcellentTaste.Pages.Orders
         public Order Order { get; set; }
 
         [BindProperty]
-        public IEnumerable<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
 
         public List<CategoryViewModel> Categories { get; set; }
 
@@ -63,16 +63,22 @@ namespace ExcellentTaste.Pages.Orders
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int[] productId, int[] orderItemId, int[] quantity, bool[] status)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var formdata = Request.Form;
+            Order.Items = await _context.OrderItem.Where(item => item.OrderId == Order.Id).ToListAsync();
             _context.Attach(Order).State = EntityState.Modified;
 
+            for (int i = 0; i < orderItemId.Length; i++)
+            {
+                var item = Order.Items.FirstOrDefault(it => it.Id == orderItemId[i]);
+                item.Quantity = quantity[i];
+                item.IsReady = status[i];
+            }
             try
             {
                 await _context.SaveChangesAsync();
@@ -92,45 +98,6 @@ namespace ExcellentTaste.Pages.Orders
             return RedirectToPage("./Index");
         }
 
-        public PartialViewResult OnGetNewItems(int orderId, int categoryId)
-        {
-            //TODO: Refactor to match the new data flow.
-            var selectedCategory = _context.Categories
-                .Include(cat => cat.Products)
-                .ThenInclude(pc => pc.Product)
-                .ThenInclude(p => p.ProductTags)
-                .ThenInclude(pt => pt.DietTag)
-                .FirstOrDefault(cat => cat.Id == categoryId);
-
-            var order = _context.Order.FirstOrDefault(order => order.Id == orderId);
-
-            //fill the items with the items of the order.
-            List<OrderItem> items = _context.OrderItem.Where(orderitem => orderitem.Order == order).ToList();
-
-            if (selectedCategory == null)
-            {
-                throw new NullReferenceException();
-            }
-            foreach (var product in selectedCategory.Products.Select(p => p.Product))
-            {
-                //If this product is not yet in the list of products (it hasn't previously been added) add it
-                if (!items.Any(i => i.Product == product))
-                {
-                    items.Add(new OrderItem
-                    {
-                        Id = -1,
-                        Product = product,
-                        Order = order,
-                        IsReady = false,
-                        Quantity = 0
-                    });
-                }
-            }
-
-
-            return Partial("OrderItems/_ItemList", items);
-        }
-
         public PartialViewResult OnGetCategory(int categoryId)
         {
             List<Product> model = _context.ProductCategories.Where(pc => pc.CategoryId == categoryId).Select(pc => pc.Product).ToList();
@@ -139,11 +106,11 @@ namespace ExcellentTaste.Pages.Orders
 
         public PartialViewResult OnGetAddItem(int orderId, int productId)
         {
+
             var order = _context.Order
                 .Include(o => o.Items)
                 .ThenInclude(item => item.Product)
                 .FirstOrDefault(o => o.Id == orderId);
-
             var product = _context.Product.Find(productId);
             var newItem = new OrderItem()
             {
@@ -155,7 +122,8 @@ namespace ExcellentTaste.Pages.Orders
             order.Items.Add(newItem);
             _context.Attach(order).State = EntityState.Modified;
             _context.SaveChanges();
-            return Partial("OrderItems/_ItemList", order.Items);
+            var model = _context.Order.First(o => o.Id == orderId).Items.ToList();
+            return Partial("OrderItems/_ItemList", model);
         }
 
         private bool OrderExists(int id)

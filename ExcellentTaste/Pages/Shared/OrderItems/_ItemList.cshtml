@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ExcellentTaste.Models.OrderItem>
 
-<table class="table">
+<table class="table" id="itemcontainer">
     <thead>
         <tr>
             <th>
@@ -18,16 +18,16 @@
         @foreach (var item in Model)
         {
             <tr>
-                @Html.HiddenFor(modelItem => item.Id)
+                @Html.Hidden("orderItemId", item.Id, new { name = "orderItemId" })
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.Name)
-                    @Html.HiddenFor(modelItem => item.ProductId)
+                    @Html.Hidden("productId", item.ProductId, new { name = "productId" })
                 </td>
                 <td>
-                    @Html.EditorFor(modelItem => item.Quantity)
+                    @Html.EditorFor(modelItem => item.Quantity, null, "quantity")
                 </td>
                 <td>
-                    @Html.EditorFor(modelItem => item.IsReady)
+                    @Html.EditorFor(modelItem => item.IsReady, null, "status")
                 </td>
             </tr>
         }
