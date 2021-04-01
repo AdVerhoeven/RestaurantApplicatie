@@ -9,11 +9,6 @@
         if (selectedCatContainer.children().length == 0) {
             //If we haven't got any content inside the category div, retrieve the content trough ajax.
 
-            //TODO: remove old code.
-            //var index = document.URL.lastIndexOf('=');
-            //var order = document.URL.substring(index);
-            //var partial = '/Orders/Edit?handler=NewItems&orderId=' + order + '&categoryId=' + cat;
-
             var partial = '/Orders/Edit?handler=Category&categoryId=' + cat;
 
             selectedCatContainer.load(partial, function () {
@@ -37,4 +32,38 @@ function showCategory(selectedCategory) {
     }
     //Make sure the selected category is visible.
     selectedCategory.removeAttr('hidden');
+}
+
+//Adds item to the order.
+function AddItem(id) {
+    var itemcontainer = $("#itemcontainer");
+    var index = document.URL.lastIndexOf('=');
+    var orderid = document.URL.substring(index + 1);
+    console.log(orderid);
+    var partial = '/Shared/OrderItems/AddItem?orderId=' + orderid + '&productId=' + id;
+
+    itemcontainer.load(partial, function () {
+        console.log("Added product with id: " + id);
+    });
+}
+
+//Removes item
+function RemoveItem(id) {
+    var itemcontainer = $("#itemcontainer");
+    var index = document.URL.lastIndexOf('=');
+    var orderid = document.URL.substring(index + 1);
+    console.log(orderid);
+    var partial = '/Orders/Edit?handler=RemoveItem&orderId=' + orderid + '&itemId=' + id;
+
+    itemcontainer.load(partial, function () {
+        console.log("Removed product with id: " + id);
+    });
+}
+
+function IncreaseItem(id) {
+
+}
+
+function DecreaseItem(id) {
+
 }

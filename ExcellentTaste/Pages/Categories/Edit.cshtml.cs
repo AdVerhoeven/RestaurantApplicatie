@@ -23,6 +23,11 @@ namespace ExcellentTaste.Pages.Categories
         [BindProperty]
         public Category Category { get; set; }
 
+        [BindProperty(SupportsGet =true)]
+        public string searchString { get; set; }
+
+        public List<Product> Products { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -31,6 +36,15 @@ namespace ExcellentTaste.Pages.Categories
             }
 
             Category = await _context.Categories.Include(c => c.Products).ThenInclude(p => p.Product).FirstOrDefaultAsync(m => m.Id == id);
+
+            var products = from p in _context.Product select p;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(s => s.Name.Contains(searchString));
+            }
+
+            Products = await products.ToListAsync();
 
             if (Category == null)
             {

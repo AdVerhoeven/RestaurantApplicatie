@@ -3,9 +3,12 @@
     @foreach (var item in Model)
     {
         <span><button class="btn btn-secondary" type="button" value="@item.Id">@item.Name</button></span>
-    }
+    }    
+</div>
+<div class="row">
     @foreach (var item in Model)
     {
+        @*A hidden div to load products into with ajax.*@
         <div class="category-content" id="@("category-container"+item.Id)" hidden></div>
     }
 </div>

@@ -9,8 +9,7 @@ namespace ExcellentTaste.Models
     public class ReceiptFactory
     {
         public Receipt Generate(Order order)
-        {
-
+        { 
             //Make receipt from products in the order.
             var sb = new StringBuilder();
             decimal total = 0;
@@ -21,7 +20,7 @@ namespace ExcellentTaste.Models
                 var product = orderitem.Product;
                 if (product == null)
                 {
-                    //TODO: Get the correct product from the database
+                    //TODO: Get the correct product from the database or throw back an exception to the caller.
                 }
                 sb.Append($"{product.Name} €{product.Price} x{amount}\n");
                 total += product.Price * amount;

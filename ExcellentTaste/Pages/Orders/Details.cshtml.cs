@@ -28,7 +28,10 @@ namespace ExcellentTaste.Pages.Orders
                 return NotFound();
             }
 
-            Order = await _context.Order.FirstOrDefaultAsync(m => m.Id == id);
+            Order = await _context.Order
+                .Include(o => o.Items)
+                .ThenInclude(item => item.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Order == null)
             {

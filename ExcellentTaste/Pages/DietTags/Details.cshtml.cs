@@ -28,7 +28,10 @@ namespace ExcellentTaste.Pages.DietTags
                 return NotFound();
             }
 
-            DietTag = await _context.DietTag.FirstOrDefaultAsync(m => m.Id == id);
+            DietTag = await _context.DietTag
+                .Include(dt => dt.ProductTags)
+                .ThenInclude(pt => pt.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (DietTag == null)
             {

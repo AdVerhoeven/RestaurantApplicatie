@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace ExcellentTaste.Models
 
         [Range(0,int.MaxValue)]
         public int Quantity { get; set; }
-
+        
+        [DisplayName("Status")]
         public bool IsReady { get; set; }
     }
 }

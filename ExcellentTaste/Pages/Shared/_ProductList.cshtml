@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<ExcellentTaste.Models.Product>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -24,24 +21,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.ToList()) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Available)
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.ToList())
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tax)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Available)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

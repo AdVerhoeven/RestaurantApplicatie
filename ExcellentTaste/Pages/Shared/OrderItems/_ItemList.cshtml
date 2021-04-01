@@ -1,33 +1,52 @@
-﻿@model IEnumerable<ExcellentTaste.Models.OrderItem>
+﻿@model IList<ExcellentTaste.Models.OrderItem>
 
 <table class="table" id="itemcontainer">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Product)
+                @Html.DisplayNameFor(model => model[0].Product)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Quantity)
+                @Html.DisplayNameFor(model => model[0].Quantity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsReady)
+                @Html.DisplayNameFor(model => model[0].IsReady)
+            </th>
+            <th>
+
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @for (int i = 0; i < Model.Count; i++)
         {
             <tr>
-                @Html.Hidden("orderItemId", item.Id, new { name = "orderItemId" })
+                @Html.HiddenFor(m => m[i].Id)
+                @Html.HiddenFor(m => m[i].ProductId)
+                @Html.HiddenFor(m => m[i].OrderId)
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
-                    @Html.Hidden("productId", item.ProductId, new { name = "productId" })
+                    @Html.DisplayFor(m => m[i].Product.Name)
                 </td>
                 <td>
-                    @Html.EditorFor(modelItem => item.Quantity, null, "quantity")
+                    @if (Model[i].IsReady)
+                    {
+                        @Html.DisplayFor(m => m[i].Quantity)
+                    }
+                    else
+                    {
+                        @Html.EditorFor(m => m[i].Quantity)
+                    }
                 </td>
                 <td>
-                    @Html.EditorFor(modelItem => item.IsReady, null, "status")
+                    @Html.DisplayFor(m => m[i].IsReady)
+                </td>
+                <td>
+                    @if (!Model[i].IsReady)
+                    {
+                        <button class="btn btn-secondary" type="button" onclick="IncreaseItem(@Model[i].Id)">+</button>
+                        <button class="btn btn-secondary" type="button" onclick="DecreaseItem(@Model[i].Id)">-</button>
+                        <button class="btn btn-secondary" type="button" onclick="RemoveItem(@Model[i].Id)">Remove</button>
+                    }
                 </td>
             </tr>
         }

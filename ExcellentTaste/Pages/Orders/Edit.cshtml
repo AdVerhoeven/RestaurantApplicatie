@@ -10,7 +10,7 @@
 <h4>Order</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Order.Id" />
@@ -21,16 +21,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Order.Items" class="control-label"></label>
-                <partial name="OrderItems/_ItemList" model="Model.Order.Items"/>
+                <partial name="OrderItems/_ItemList" model="Model.Order.Items.ToList()" />
             </div>
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
-        <div class="form-group">
-            <partial name="OrderItems/_CategorySelection" model="Model.Categories" />
-        </div>
+    </div>
+    <div class="category-selection">
+        <partial name="OrderItems/_CategorySelection" model="Model.Categories" />
     </div>
 </div>
 

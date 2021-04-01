@@ -15,6 +15,6 @@ namespace ExcellentTaste.Models
 
         public ICollection<OrderTable> OrderTables { get; set; }
 
-        public ICollection<OrderItem> Items { get; set; }
+        public IList<OrderItem> Items { get; set; }
     }
 }
